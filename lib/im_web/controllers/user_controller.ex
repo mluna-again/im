@@ -27,6 +27,7 @@ defmodule ImWeb.UserController do
   end
 
   def show_logged(conn, _params) do
+    Process.sleep(500)
     token = get_session(conn, :user_token)
 
     user_id =
