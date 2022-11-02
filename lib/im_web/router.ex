@@ -11,6 +11,7 @@ defmodule ImWeb.Router do
   end
 
   pipeline :api do
+    plug :fetch_session
     plug :accepts, ["json"]
   end
 
@@ -18,6 +19,10 @@ defmodule ImWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+  end
+
+  scope "/", ImWeb do
+    pipe_through :api
 
     resources "/users", UserController
   end

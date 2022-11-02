@@ -14,6 +14,8 @@ defmodule Im.Accounts.User do
     user
     |> cast(attrs, [:username, :password])
     |> validate_required([:username, :password])
+    |> validate_length(:username, min: 4, max: 15)
+    |> validate_length(:password, min: 6, max: 72)
     |> unique_constraint(:username)
     |> maybe_hash_password()
   end
