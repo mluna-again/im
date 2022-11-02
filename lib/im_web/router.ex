@@ -18,8 +18,10 @@ defmodule ImWeb.Router do
   scope "/", ImWeb do
     pipe_through :api
 
+    get "/users/logged", UserController, :show_logged
     resources "/users", UserController
     post "log-in", SessionController, :create
+    delete "log-out", SessionController, :delete
   end
 
   # Other scopes may use custom stacks.

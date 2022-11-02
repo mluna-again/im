@@ -74,6 +74,35 @@ defmodule Im.Accounts do
   end
 
   @doc """
+  Gets a user by username and password.
+
+  ## Examples
+
+      iex> get_user_by_username_and_password(username, password)
+      iex> %User{}
+
+      iex> get_user_by_username_and_password(invalid_username, password)
+      iex> nil
+
+      iex> get_user_by_username_and_password(username, invalid_password)
+      iex> nil
+  """
+  def get_user_by_username_and_password!(username, password) do
+    user = Repo.get_by(User, username: username)
+
+    check_password(user, password)
+  end
+
+  defp check_password(nil, _password), do: nil
+
+  defp check_password(user, password) do
+    case Bcrypt.check_pass(user, password, hash_key: :password) do
+      {:ok, user} -> user
+      {:error, _error} -> nil
+    end
+  end
+
+  @doc """
   Deletes a user.
 
   ## Examples

@@ -6,6 +6,8 @@ defmodule ImWeb.UserController do
 
   action_fallback ImWeb.FallbackController
 
+  @one_day 86400
+
   def index(conn, _params) do
     users = Accounts.list_users()
     render(conn, "index.json", users: users)
@@ -22,6 +24,25 @@ defmodule ImWeb.UserController do
   def show(conn, %{"id" => id}) do
     user = Accounts.get_user!(id)
     render(conn, "show.json", user: user)
+  end
+
+  def show_logged(conn, _params) do
+    token = get_session(conn, :user_token)
+
+    user_id =
+      token && Phoenix.Token.verify(ImWeb.Endpoint, "user_token", token, max_age: @one_day)
+
+    case user_id do
+      {:ok, id} ->
+        user = Accounts.get_user!(id)
+        render(conn, "show.json", user: user)
+
+      {:error, _error} ->
+        send_resp(conn, :unauthorized, "")
+
+      nil ->
+        send_resp(conn, :unauthorized, "")
+    end
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
