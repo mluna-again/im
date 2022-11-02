@@ -16,15 +16,10 @@ defmodule ImWeb.Router do
   end
 
   scope "/", ImWeb do
-    pipe_through :browser
-
-    get "/", PageController, :index
-  end
-
-  scope "/", ImWeb do
     pipe_through :api
 
     resources "/users", UserController
+    post "log-in", SessionController, :create
   end
 
   # Other scopes may use custom stacks.
