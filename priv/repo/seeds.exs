@@ -10,8 +10,7 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Im.{Repo, Accounts}
-alias Im.Accounts.{Friend}
+alias Im.Accounts
 
 usernames = ["lucy", "kasumi", "alex"]
 
