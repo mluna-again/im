@@ -73,12 +73,11 @@ defmodule Im.Accounts do
     if friendship = get_friendship(sender, receiver) do
       {:ok, friendship}
     else
-      Repo.get_by(FriendRequest, from_id: sender.id)
-      |> maybe_send_request_or_create_friendship(sender, receiver)
+      maybe_send_request_or_create_friendship(sender, receiver)
     end
   end
 
-  defp maybe_send_request_or_create_friendship(_request = nil, sender, receiver) do
+  defp maybe_send_request_or_create_friendship(sender, receiver) do
     # check if receiver sent an invitation first
     inverse_request = Repo.get_by(FriendRequest, from_id: receiver.id, to_id: sender.id)
 
@@ -93,17 +92,6 @@ defmodule Im.Accounts do
       |> FriendRequest.changeset(%{from_id: sender.id, to_id: receiver.id})
       |> Repo.insert()
     end
-  end
-
-  # request already sent
-  defp maybe_send_request_or_create_friendship(
-         %FriendRequest{from_id: id, to_id: receiver_id} = request,
-         %{id: id},
-         %{
-           id: receiver_id
-         }
-       ) do
-    {:ok, request}
   end
 
   @doc """
