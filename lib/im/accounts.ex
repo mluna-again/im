@@ -10,11 +10,56 @@ defmodule Im.Accounts do
   alias Im.Accounts.User
 
   @doc """
+  Returns a list of users that the current user *could* befriend.
+  I cannot belive this works. It probably doesn't, but at least looks
+  like it does ¯\_(ツ)_/¯.
+  *** DON'T TOUCH IT ;( ***
+
+  ## Accepted params:
+    * search
+    * limit - defaults to 10, max 100, min 1
+
+  ## Examples
+
+      iex> list_potential_friends(user, %{})
+      [%User{}, ...]
+  """
+  @spec list_potential_friends(user_id :: %User{}, params :: term()) :: list(%User{})
+  def list_potential_friends(user, params) do
+    limit =
+      case params["limit"] do
+        nil -> 10
+        x when x > 100 -> 10
+        x when x < 1 -> 10
+      end
+
+    search_term = "%#{Sql.sanitize_like_query(params["search"])}%"
+
+    from(u in User,
+      left_join: req_sent in "friendship_requests",
+      on: req_sent.from_id == ^user.id and u.id == req_sent.to_id,
+      left_join: req_received in "friendship_requests",
+      on: req_received.to_id == ^user.id and u.id == req_received.from_id,
+      where: u.id != ^user.id,
+      limit: ^limit,
+      order_by: [desc: u.inserted_at],
+      where: ilike(u.username, ^search_term),
+      select: %{
+        id: u.id,
+        username: u.username,
+        invitation_sent: not is_nil(req_sent.from_id),
+        invitation_received: not is_nil(req_received.to_id)
+      }
+    )
+    |> Repo.all()
+  end
+
+  @doc """
   Returns the list of users.
 
   ## Examples
 
-      iex> list_users()
+      iex> list_users(%{})
       [%User{}, ...]
 
   """

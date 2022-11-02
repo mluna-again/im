@@ -9,8 +9,23 @@ defmodule ImWeb.UserController do
   @one_day 86400
 
   def index(conn, params) do
-    users = Accounts.list_users(params)
-    render(conn, "index.json", users: users)
+    token = get_session(conn, :user_token)
+
+    user_id =
+      token && Phoenix.Token.verify(ImWeb.Endpoint, "user_token", token, max_age: @one_day)
+
+    case user_id do
+      {:ok, id} ->
+        user = Accounts.get_user!(id)
+        users = Accounts.list_potential_friends(user, params)
+        render(conn, "index.json", users: users)
+
+      {:error, _error} ->
+        send_resp(conn, :unauthorized, "")
+
+      nil ->
+        send_resp(conn, :unauthorized, "")
+    end
   end
 
   def create(conn, %{"user" => user_params}) do
@@ -27,7 +42,6 @@ defmodule ImWeb.UserController do
   end
 
   def show_logged(conn, _params) do
-    Process.sleep(500)
     token = get_session(conn, :user_token)
 
     user_id =

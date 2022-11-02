@@ -5,6 +5,8 @@ defmodule Im.Accounts.User do
   schema "users" do
     field :password, :string
     field :username, :string
+    field :invitation_sent, :boolean, virtual: true
+    field :invitation_received, :boolean, virtual: true
 
     timestamps()
   end
