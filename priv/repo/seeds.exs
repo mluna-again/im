@@ -9,3 +9,12 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias Im.{Repo, Accounts}
+alias Im.Accounts.{Friend}
+
+usernames = ["lucy", "kasumi", "alex"]
+
+for user <- usernames do
+  {:ok, _user} = Accounts.create_user(%{username: user, password: "asdfasdf"})
+end
