@@ -7,7 +7,7 @@ defmodule Im.Accounts do
   alias Im.Repo
   alias Im.Sql
 
-  alias Im.Accounts.{User, FriendRequest}
+  alias Im.Accounts.{User, FriendRequest, Friendship}
 
   @doc """
   Returns a list of users that the current user *could* befriend.
@@ -81,7 +81,9 @@ defmodule Im.Accounts do
     if inverse_request do
       Repo.delete(FriendRequest, inverse_request.id)
       # create friendship
-      {:ok, nil}
+      %Friendship{}
+      |> Friendship.changeset(%{first_id: sender.id, second_id: receiver.id})
+      |> Repo.insert()
     else
       %FriendRequest{}
       |> FriendRequest.changeset(%{from_id: sender.id, to_id: receiver.id})
