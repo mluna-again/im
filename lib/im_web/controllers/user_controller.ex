@@ -8,8 +8,8 @@ defmodule ImWeb.UserController do
 
   @one_day 86400
 
-  def index(conn, _params) do
-    users = Accounts.list_users()
+  def index(conn, params) do
+    users = Accounts.list_users(params)
     render(conn, "index.json", users: users)
   end
 

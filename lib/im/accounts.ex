@@ -5,6 +5,7 @@ defmodule Im.Accounts do
 
   import Ecto.Query, warn: false
   alias Im.Repo
+  alias Im.Sql
 
   alias Im.Accounts.User
 
@@ -17,9 +18,22 @@ defmodule Im.Accounts do
       [%User{}, ...]
 
   """
-  def list_users do
-    Repo.all(User)
+  def list_users(%{"limit" => limit, "search" => search_term}) when search_term != "" do
+    limit = limit || 10
+
+    search_term = "%#{Sql.sanitize_like_query(search_term)}%"
+
+    query =
+      from(user in User,
+        limit: ^limit,
+        order_by: [desc: user.inserted_at],
+        where: ilike(user.username, ^search_term)
+      )
+
+    Repo.all(query)
   end
+
+  def list_users(_params), do: Repo.all(User)
 
   @doc """
   Gets a single user.
