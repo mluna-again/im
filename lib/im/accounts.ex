@@ -7,7 +7,7 @@ defmodule Im.Accounts do
   alias Im.Repo
   alias Im.Sql
 
-  alias Im.Accounts.User
+  alias Im.Accounts.{User, FriendRequest}
 
   @doc """
   Returns a list of users that the current user *could* befriend.
@@ -52,6 +52,52 @@ defmodule Im.Accounts do
       }
     )
     |> Repo.all()
+  end
+
+  @doc """
+    Sends a friendship request from `sender` to `receiver`.
+
+    ## Example
+        iex> send_friend_request(sender, receiver)
+        iex> {:ok, %FriendRequest{}}
+
+        iex> send_friend_request(sender, receiver)
+        iex> {:ok, %Friendship{}} # when both users sent an invitation to each other
+
+        iex> send_friend_request(sender, non_existing_user)
+        iex> {:error, %Ecto.ChangeError{}}
+  """
+  @spec send_friend_request(sender :: %User{}, receiver :: %User{}) ::
+          {:ok, term()} | {:error, term()}
+  def send_friend_request(sender, receiver) do
+    Repo.get_by(FriendRequest, from_id: sender.id)
+    |> maybe_send_request_or_create_friendship(sender, receiver)
+  end
+
+  defp maybe_send_request_or_create_friendship(_request = nil, sender, receiver) do
+    # check if receiver sent an invitation first
+    inverse_request = Repo.get_by(FriendRequest, from_id: receiver.id, to_id: sender.id)
+
+    if inverse_request do
+      Repo.delete(FriendRequest, inverse_request.id)
+      # create friendship
+      {:ok, nil}
+    else
+      %FriendRequest{}
+      |> FriendRequest.changeset(%{from_id: sender.id, to_id: receiver.id})
+      |> Repo.insert()
+    end
+  end
+
+  # request already sent
+  defp maybe_send_request_or_create_friendship(
+         %FriendRequest{from_id: id, to_id: receiver_id} = request,
+         %{id: id},
+         %{
+           id: receiver_id
+         }
+       ) do
+    {:ok, request}
   end
 
   @doc """
