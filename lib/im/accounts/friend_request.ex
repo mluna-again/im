@@ -5,8 +5,8 @@ defmodule Im.Accounts.FriendRequest do
   alias Im.Accounts.User
 
   schema "friendship_request" do
-    belongs_to :from_id, User
-    belongs_to :to_id, User
+    belongs_to :from, User
+    belongs_to :to, User
 
     timestamps()
   end

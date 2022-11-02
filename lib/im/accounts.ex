@@ -70,8 +70,12 @@ defmodule Im.Accounts do
   @spec send_friend_request(sender :: %User{}, receiver :: %User{}) ::
           {:ok, term()} | {:error, term()}
   def send_friend_request(sender, receiver) do
-    Repo.get_by(FriendRequest, from_id: sender.id)
-    |> maybe_send_request_or_create_friendship(sender, receiver)
+    if friendship = get_friendship(sender, receiver) do
+      {:ok, friendship}
+    else
+      Repo.get_by(FriendRequest, from_id: sender.id)
+      |> maybe_send_request_or_create_friendship(sender, receiver)
+    end
   end
 
   defp maybe_send_request_or_create_friendship(_request = nil, sender, receiver) do
@@ -100,6 +104,22 @@ defmodule Im.Accounts do
          }
        ) do
     {:ok, request}
+  end
+
+  @doc """
+    Checks if `first` and `second` are friends.
+
+    ## Example
+        iex> get_friendship(user, another_user)
+        iex> %Friendship{}
+  """
+  @spec get_friendship(first :: %User{}, second :: %User{}) :: %Friendship{} | nil
+  def get_friendship(first, second) do
+    from(f in Friendship,
+      where: f.first_id == ^first.id and f.second_id == ^second.id,
+      or_where: f.first_id == ^second.id and f.second_id == ^first.id
+    )
+    |> Repo.one()
   end
 
   @doc """

@@ -5,8 +5,8 @@ defmodule Im.Accounts.Friendship do
   alias Im.Accounts.User
 
   schema "friendships" do
-    belongs_to :first_id, User
-    belongs_to :second_id, User
+    belongs_to :first, User
+    belongs_to :second, User
 
     timestamps()
   end
