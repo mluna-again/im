@@ -20,8 +20,11 @@ defmodule ImWeb.Router do
 
     get "/users/logged", UserController, :show_logged
     resources "/users", UserController
-    post "log-in", SessionController, :create
-    delete "log-out", SessionController, :delete
+
+    post "/log-in", SessionController, :create
+    delete "/log-out", SessionController, :delete
+
+    post "/friends/request", FriendController, :send_request
   end
 
   # Other scopes may use custom stacks.
