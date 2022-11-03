@@ -15,9 +15,14 @@ defmodule ImWeb.FriendController do
       {:ok, %Accounts.Friendship{}} ->
         receiver_view = ImWeb.UserView.render("user.json", %{user: receiver})
 
+        # logged user accepted a request
         ImWeb.Endpoint.broadcast("messages:#{logged_user.id}", "remove_request", %{
           user_to_remove: receiver_view
         })
+
+        # another user accepted a request
+        user_view = ImWeb.UserView.render("user.json", %{user: logged_user})
+        ImWeb.Endpoint.broadcast("messages:#{receiver.id}", "new_friend", user_view)
 
         send_resp(conn, :created, "")
 
