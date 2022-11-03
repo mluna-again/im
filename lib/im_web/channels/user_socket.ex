@@ -10,6 +10,7 @@ defmodule ImWeb.UserSocket do
   ## Channels
 
   channel "messages:*", ImWeb.MessagesChannel
+  channel "requests:*", ImWeb.RequestsChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
