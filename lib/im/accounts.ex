@@ -159,8 +159,22 @@ defmodule Im.Accounts do
 
   """
   def get_user!(id) do
+    friends =
+      from(f in Friendship,
+        where: f.first_id == ^id,
+        or_where: f.second_id == ^id,
+        join: friend in User,
+        on: (friend.id == f.first_id or friend.id == f.second_id) and friend.id != ^id,
+        select: %{
+          id: friend.id,
+          username: friend.username
+        }
+      )
+      |> Repo.all()
+
     Repo.get!(User, id)
     |> Repo.preload(friend_requests: [:from])
+    |> Map.put(:friends, friends)
   end
 
   @doc """

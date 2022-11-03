@@ -9,9 +9,10 @@ defmodule Im.Accounts.User do
     field :username, :string
     field :invitation_sent, :boolean, virtual: true
     field :invitation_received, :boolean, virtual: true
-    # is *this* user friends with logged user?
-    field :friends, :boolean, virtual: true
+    field :friends_with_logged, :boolean, virtual: true
     has_many :friend_requests, FriendRequest, foreign_key: :to_id
+    # i didn't know how to define this so i populate this on the context...
+    # has_many :friends, User
 
     timestamps()
   end
