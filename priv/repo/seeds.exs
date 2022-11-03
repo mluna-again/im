@@ -11,9 +11,19 @@
 # and so on) as they will fail if something goes wrong.
 
 alias Im.Accounts
+alias Im.Repo
 
 usernames = ["lucy", "kasumi", "alex"]
 
-for user <- usernames do
-  {:ok, _user} = Accounts.create_user(%{username: user, password: "asdfasdf"})
+users =
+  for user <- usernames do
+    {:ok, _user} = Accounts.create_user(%{username: user, password: "asdfasdf"})
+  end
+
+kasumi = Repo.get_by!(username: "kasumi")
+
+for user <- users do
+  if not user.username == "kasumi" do
+    Accounts.send_friend_request(user, kasumi)
+  end
 end
