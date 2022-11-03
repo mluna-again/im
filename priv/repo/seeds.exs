@@ -13,7 +13,7 @@
 alias Im.Accounts
 alias Im.Repo
 
-usernames = ["lucy", "kasumi", "alex", "mari", "ruby", "sofia"]
+usernames = ["lucy", "kasumi", "alex", "mari", "ruby", "sofia", "haru", "liah", "reah"]
 
 users =
   for user <- usernames do
