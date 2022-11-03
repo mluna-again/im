@@ -2,12 +2,16 @@ defmodule Im.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Im.Accounts.FriendRequest
+
   schema "users" do
     field :password, :string
     field :username, :string
     field :invitation_sent, :boolean, virtual: true
     field :invitation_received, :boolean, virtual: true
+    # is *this* user friends with logged user?
     field :friends, :boolean, virtual: true
+    has_many :friend_requests, FriendRequest, foreign_key: :to_id
 
     timestamps()
   end

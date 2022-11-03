@@ -18,10 +18,18 @@ defmodule ImWeb.UserView do
       invitation_received: user.invitation_received,
       # this is a boolean that checks if logged user is friends with *this* user
       friends: user.friends,
-      requests: requests(user)
+      friend_requests: requests(user)
     }
   end
 
-  defp requests(%{requests: req}), do: req
-  defp requests(_), do: 0
+  defp requests(%{friend_requests: friend_requests}) do
+    for req <- friend_requests do
+      %{
+        id: req.from_id,
+        username: req.from.username
+      }
+    end
+  end
+
+  defp requests(_user), do: []
 end

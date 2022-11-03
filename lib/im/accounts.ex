@@ -159,10 +159,8 @@ defmodule Im.Accounts do
 
   """
   def get_user!(id) do
-    requests = Repo.one(from r in FriendRequest, where: r.to_id == ^id, select: count(r.id))
-
     Repo.get!(User, id)
-    |> Map.put(:requests, requests)
+    |> Repo.preload(friend_requests: [:from])
   end
 
   @doc """
