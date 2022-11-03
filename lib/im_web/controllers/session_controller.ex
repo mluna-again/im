@@ -12,7 +12,7 @@ defmodule ImWeb.SessionController do
       conn
       |> renew_session()
       |> put_session(:user_token, token)
-      |> send_resp(:created, "")
+      |> json(%{token: token})
     else
       send_resp(conn, :unauthorized, "")
     end

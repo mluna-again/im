@@ -12,8 +12,12 @@ defmodule ImWeb.FriendController do
     receiver = Accounts.get_user!(user_id)
 
     case Accounts.send_friend_request(logged_user, receiver) do
-      {:ok, _friendship} -> send_resp(conn, :created, "")
-      {:error, _error} -> send_resp(conn, :bad_request, "")
+      {:ok, _friendship} ->
+        ImWeb.Endpoint.broadcast("messages:#{receiver.id}", "new_request", %{})
+        send_resp(conn, :created, "")
+
+      {:error, _error} ->
+        send_resp(conn, :bad_request, "")
     end
   end
 end
