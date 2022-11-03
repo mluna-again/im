@@ -13,7 +13,8 @@ defmodule Im.Accounts do
   Returns a list of users that the current user *could* befriend.
   I cannot belive this works. It probably doesn't, but at least looks
   like it does ¯\_(ツ)_/¯.
-  *** DON'T TOUCH IT ;( ***
+
+  Lord forgive me.
 
   ## Accepted params:
     * search
@@ -24,7 +25,7 @@ defmodule Im.Accounts do
       iex> list_potential_friends(user, %{})
       [%User{}, ...]
   """
-  @spec list_potential_friends(user_id :: %User{}, params :: term()) :: list(%User{})
+  @spec list_potential_friends(user :: %User{}, params :: term()) :: list(%User{})
   def list_potential_friends(user, params) do
     limit =
       case params["limit"] do
@@ -40,6 +41,8 @@ defmodule Im.Accounts do
       on: req_sent.from_id == ^user.id and u.id == req_sent.to_id,
       left_join: req_received in "friendship_requests",
       on: req_received.to_id == ^user.id and u.id == req_received.from_id,
+      left_join: friendship in Friendship,
+      on: friendship.first_id == u.id or friendship.second_id == u.id,
       where: u.id != ^user.id,
       limit: ^limit,
       order_by: [desc: u.inserted_at],
@@ -48,7 +51,10 @@ defmodule Im.Accounts do
         id: u.id,
         username: u.username,
         invitation_sent: not is_nil(req_sent.from_id),
-        invitation_received: not is_nil(req_received.to_id)
+        invitation_received: not is_nil(req_received.to_id),
+        friends:
+          (friendship.first_id == u.id and friendship.second_id == ^user.id) or
+            (friendship.first_id == ^user.id and friendship.second_id == u.id)
       }
     )
     |> Repo.all()
@@ -82,7 +88,7 @@ defmodule Im.Accounts do
     inverse_request = Repo.get_by(FriendRequest, from_id: receiver.id, to_id: sender.id)
 
     if inverse_request do
-      Repo.delete(FriendRequest, inverse_request.id)
+      Repo.delete(inverse_request)
       # create friendship
       %Friendship{}
       |> Friendship.changeset(%{first_id: sender.id, second_id: receiver.id})

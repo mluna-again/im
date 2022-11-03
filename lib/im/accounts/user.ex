@@ -7,6 +7,7 @@ defmodule Im.Accounts.User do
     field :username, :string
     field :invitation_sent, :boolean, virtual: true
     field :invitation_received, :boolean, virtual: true
+    field :friends, :boolean, virtual: true
 
     timestamps()
   end
