@@ -29,6 +29,8 @@ defmodule ImWeb.UserView do
 
   defp friends_with_logged(_), do: false
 
+  defp requests(%{friend_requests: %Ecto.Association.NotLoaded{}}), do: []
+
   defp requests(%{friend_requests: friend_requests}) do
     for req <- friend_requests do
       %{
