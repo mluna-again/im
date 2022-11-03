@@ -42,7 +42,9 @@ defmodule Im.Accounts do
       left_join: req_received in "friendship_requests",
       on: req_received.to_id == ^user.id and u.id == req_received.from_id,
       left_join: friendship in Friendship,
-      on: friendship.first_id == u.id or friendship.second_id == u.id,
+      on:
+        (friendship.first_id == u.id and friendship.second_id == ^user.id) or
+          (friendship.first_id == ^user.id and friendship.second_id == u.id),
       where: u.id != ^user.id,
       limit: ^limit,
       order_by: [desc: u.inserted_at],
