@@ -17,13 +17,14 @@ usernames = ["lucy", "kasumi", "alex"]
 
 users =
   for user <- usernames do
-    {:ok, _user} = Accounts.create_user(%{username: user, password: "asdfasdf"})
+    {:ok, user} = Accounts.create_user(%{username: user, password: "asdfasdf"})
+    user
   end
 
-kasumi = Repo.get_by!(username: "kasumi")
+kasumi = Repo.get_by!(Accounts.User, username: "kasumi")
 
 for user <- users do
-  if not user.username == "kasumi" do
+  unless user.username == "kasumi" do
     Accounts.send_friend_request(user, kasumi)
   end
 end
