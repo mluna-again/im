@@ -119,7 +119,8 @@ defmodule Im.Messages do
     from(message in Message,
       where: message.room_id == ^room.id,
       limit: ^messages_limit(params),
-      order_by: [asc: message.inserted_at]
+      order_by: [asc: message.inserted_at],
+      preload: [:user]
     )
     |> Repo.all()
   end

@@ -9,7 +9,8 @@ defmodule ImWeb.MessageView do
   def render("message.json", %{message: message}) do
     %{
       id: message.id,
-      user: message.user
+      user: render_one(message.user, ImWeb.UserView, "show.json"),
+      content: message.content
     }
   end
 end
