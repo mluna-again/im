@@ -26,6 +26,8 @@ defmodule ImWeb.Router do
     delete "/log-out", SessionController, :delete
 
     post "/friends/request", FriendController, :send_request
+
+    get "/messages/:user_id", MessageController, :show_room_messages
   end
 
   # Other scopes may use custom stacks.

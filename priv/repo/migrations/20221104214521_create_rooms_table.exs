@@ -3,8 +3,8 @@ defmodule Im.Repo.Migrations.CreateRoomsTable do
 
   def change do
     create table(:rooms) do
-      add(:first, references(:users, on_delete: :nothing))
-      add(:second, references(:users, on_delete: :nothing))
+      add(:first_id, references(:users, on_delete: :nothing))
+      add(:second_id, references(:users, on_delete: :nothing))
 
       timestamps()
     end

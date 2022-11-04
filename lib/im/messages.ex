@@ -6,7 +6,7 @@ defmodule Im.Messages do
   import Ecto.Query, warn: false
   alias Im.Repo
 
-  alias Im.Messages.Message
+  alias Im.Messages.{Message, Room}
 
   @doc """
   Returns the list of messages.
@@ -101,4 +101,52 @@ defmodule Im.Messages do
   def change_message(%Message{} = message, attrs \\ %{}) do
     Message.changeset(message, attrs)
   end
+
+  def get_room_or_create!(first, second) do
+    room =
+      from(room in Room,
+        where: room.first_id == ^first.id and room.second_id == ^second.id,
+        or_where: room.second_id == ^first.id and room.first_id == ^second.id
+      )
+      |> Repo.one()
+
+    if room do
+      room
+    else
+      %Room{}
+      |> Room.changeset(%{first_id: first.id, second_id: second.id})
+      |> Repo.insert!()
+    end
+  end
+
+  @doc """
+  Gets messages between two users.
+
+  Available params:
+    * limit -> defaults to 50, min: 1, max: 150
+
+  ## Examples
+      iex> list_messages_between_users!(first, second)
+      iex> [%Message{}]
+  """
+  def list_messages_between_users!(first, second, params \\ %{}) do
+    room = get_room_or_create!(first, second)
+
+    from(message in Message,
+      where: message.room_id == ^room.id,
+      limit: ^messages_limit(params),
+      order_by: [asc: message.inserted_at]
+    )
+    |> Repo.all()
+  end
+
+  defp messages_limit(%{"limit" => limit}) do
+    case String.to_integer(limit) do
+      x when x > 150 -> 50
+      x when x < 1 -> 50
+      x -> x
+    end
+  end
+
+  defp messages_limit(_), do: 50
 end

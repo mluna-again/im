@@ -4,12 +4,10 @@ defmodule Im.Repo.Migrations.CreateMessages do
   def change do
     create table(:messages) do
       add(:content, :string)
-      add(:room, references(:rooms, on_delete: :nothing))
-      add(:user, references(:users, on_delete: :nothing))
+      add(:room_id, references(:rooms, on_delete: :nothing))
+      add(:user_id, references(:users, on_delete: :nothing))
 
       timestamps()
     end
-
-    create(index(:messages, [:room]))
   end
 end

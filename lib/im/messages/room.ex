@@ -4,7 +4,7 @@ defmodule Im.Messages.Room do
 
   alias Im.Accounts.User
 
-  schema "messages" do
+  schema "rooms" do
     belongs_to :first, User
     belongs_to :second, User
 
