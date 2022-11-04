@@ -29,7 +29,7 @@ defmodule Im.Accounts do
   def list_potential_friends(user, params) do
     limit =
       case params["limit"] do
-        nil -> 10
+        nil -> 5
         x when x > 100 -> 10
         x when x < 1 -> 10
       end
