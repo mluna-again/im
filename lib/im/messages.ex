@@ -7,6 +7,7 @@ defmodule Im.Messages do
   alias Im.Repo
 
   alias Im.Messages.{Message, Room}
+  alias Im.Accounts.User
 
   @doc """
   Returns the list of messages.
@@ -102,6 +103,14 @@ defmodule Im.Messages do
     Message.changeset(message, attrs)
   end
 
+  @doc """
+  Gets a room or creates it if it doesn't exist yet.
+
+  ## Examples
+      iex> get_room_or_create!(one_user, another_user)
+      iex> %Room{}
+  """
+  @spec get_room_or_create!(first :: %User{}, second :: %User{}) :: %Room{}
   def get_room_or_create!(first, second) do
     room =
       from(room in Room,
@@ -129,6 +138,8 @@ defmodule Im.Messages do
       iex> list_messages_between_users!(first, second)
       iex> [%Message{}]
   """
+  @spec list_messages_between_users!(first :: %User{}, second :: %User{}, params :: map()) ::
+          list(%Message{})
   def list_messages_between_users!(first, second, params \\ %{}) do
     room = get_room_or_create!(first, second)
 
