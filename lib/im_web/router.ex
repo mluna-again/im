@@ -28,6 +28,7 @@ defmodule ImWeb.Router do
     post "/friends/request", FriendController, :send_request
 
     get "/messages/:user_id", MessageController, :show_room_messages
+    post "/messages/:user_id", MessageController, :create
   end
 
   # Other scopes may use custom stacks.

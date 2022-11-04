@@ -39,42 +39,6 @@ defmodule Im.Messages do
   def get_message!(id), do: Repo.get!(Message, id)
 
   @doc """
-  Creates a message.
-
-  ## Examples
-
-      iex> create_message(%{field: value})
-      {:ok, %Message{}}
-
-      iex> create_message(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_message(attrs \\ %{}) do
-    %Message{}
-    |> Message.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a message.
-
-  ## Examples
-
-      iex> update_message(message, %{field: new_value})
-      {:ok, %Message{}}
-
-      iex> update_message(message, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_message(%Message{} = message, attrs) do
-    message
-    |> Message.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
   Deletes a message.
 
   ## Examples
@@ -88,19 +52,6 @@ defmodule Im.Messages do
   """
   def delete_message(%Message{} = message) do
     Repo.delete(message)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking message changes.
-
-  ## Examples
-
-      iex> change_message(message)
-      %Ecto.Changeset{data: %Message{}}
-
-  """
-  def change_message(%Message{} = message, attrs \\ %{}) do
-    Message.changeset(message, attrs)
   end
 
   @doc """
@@ -126,6 +77,28 @@ defmodule Im.Messages do
       |> Room.changeset(%{first_id: first.id, second_id: second.id})
       |> Repo.insert!()
     end
+  end
+
+  @doc """
+  Adds a new message to a room.
+
+  ## Example
+      iex> room = get_room_or_create!(lucy, kasumi)
+      iex> add_message(room, lucy, %{content: "hello!"})
+      iex> %Message{}
+  """
+  def add_message(%Room{} = room, from, message) do
+    %Message{}
+    |> Message.changeset(message, from, room)
+    |> Repo.insert()
+  end
+
+  def add_message(%User{} = from, %User{} = to, message) do
+    room = get_room_or_create!(from, to)
+
+    %Message{}
+    |> Message.changeset(message, from, room)
+    |> Repo.insert()
   end
 
   @doc """

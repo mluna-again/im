@@ -14,9 +14,11 @@ defmodule Im.Messages.Message do
   end
 
   @doc false
-  def changeset(message, attrs) do
+  def changeset(message, attrs, from, room) do
     message
     |> cast(attrs, [:content])
     |> validate_required([:content])
+    |> put_assoc(:room, room)
+    |> put_assoc(:user, from)
   end
 end
