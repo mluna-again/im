@@ -177,6 +177,12 @@ defmodule Im.Accounts do
     |> Map.put(:friends, friends)
   end
 
+  def get_user_by!(params) do
+    user = Repo.get_by!(User, params)
+    # double work but i don't feel like duplicating _that_ query...
+    get_user!(user.id)
+  end
+
   @doc """
   Creates a user.
 

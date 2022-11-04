@@ -41,6 +41,11 @@ defmodule ImWeb.UserController do
     render(conn, "show.json", user: user)
   end
 
+  def show_by_username(conn, %{"username" => username}) do
+    user = Accounts.get_user_by!(username: username)
+    render(conn, "show.json", user: user)
+  end
+
   def show_logged(conn, _params) do
     token = get_session(conn, :user_token)
 

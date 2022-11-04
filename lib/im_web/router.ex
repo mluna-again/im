@@ -19,6 +19,7 @@ defmodule ImWeb.Router do
     pipe_through :api
 
     get "/users/logged", UserController, :show_logged
+    get "/users/by_username/:username", UserController, :show_by_username
     resources "/users", UserController
 
     post "/log-in", SessionController, :create
