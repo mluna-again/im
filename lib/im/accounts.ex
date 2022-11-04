@@ -18,7 +18,7 @@ defmodule Im.Accounts do
 
   ## Accepted params:
     * search
-    * limit - defaults to 10, max 100, min 1
+    * limit - defaults to 5, max 100, min 1
 
   ## Examples
 
@@ -28,10 +28,10 @@ defmodule Im.Accounts do
   @spec list_potential_friends(user :: %User{}, params :: term()) :: list(%User{})
   def list_potential_friends(user, params) do
     limit =
-      case params["limit"] do
-        nil -> 5
-        x when x > 100 -> 10
-        x when x < 1 -> 10
+      case String.to_integer(params["limit"] || "5") do
+        x when x > 100 -> 5
+        x when x < 1 -> 5
+        x -> x
       end
 
     search_term = "%#{Sql.sanitize_like_query(params["search"])}%"
