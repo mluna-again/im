@@ -2,9 +2,13 @@ defmodule Im.Messages.Message do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Im.Messages.Room
+  alias Im.Accounts.User
+
   schema "messages" do
     field :content, :string
-    field :room, :id
+    belongs_to :room, Room
+    belongs_to :user, User
 
     timestamps()
   end
