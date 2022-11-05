@@ -27,6 +27,10 @@ defmodule ImWeb.MessageController do
     current_user = conn.assigns.current_user
 
     with {:ok, message} <- Messages.add_message(current_user, friend, message) do
+      message_view = ImWeb.MessageView.render("message.json", message: message)
+      ImWeb.Endpoint.broadcast("messages:#{current_user.id}", "new_message", message_view)
+      ImWeb.Endpoint.broadcast("messages:#{friend_id}", "new_message", message_view)
+
       render(conn, "message.json", message: message)
     end
   end
