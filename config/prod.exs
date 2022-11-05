@@ -14,6 +14,7 @@ config :im, ImWeb.Endpoint, cache_static_manifest: "priv/static/cache_manifest.j
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :im, ImWeb.Endpoint, url: [host: System.fetch_env!("SERVER_URL"), port: 443]
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
