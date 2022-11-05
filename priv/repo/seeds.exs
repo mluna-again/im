@@ -11,6 +11,7 @@
 # and so on) as they will fail if something goes wrong.
 
 alias Im.Accounts
+alias Im.Messages
 alias Im.Repo
 
 usernames = ["lucy", "kasumi", "alex", "mari", "ruby", "sofia", "haru", "liah", "reah"]
@@ -27,4 +28,12 @@ for user <- users do
   unless user.username == "kasumi" do
     Accounts.send_friend_request(user, kasumi)
   end
+end
+
+lucy = Repo.get_by!(Accounts.User, username: "lucy")
+
+Accounts.send_friend_request(kasumi, lucy)
+
+for message <- ["hi", "how are you?", ":)"] do
+  Messages.add_message(lucy, kasumi, %{content: message})
 end
