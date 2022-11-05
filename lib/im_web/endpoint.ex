@@ -11,7 +11,7 @@ defmodule ImWeb.Endpoint do
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
-  socket "/socket", ImWeb.UserSocket, websocket: true, longpool: false
+  socket "/socket", ImWeb.UserSocket, websocket: true, longpool: false, timeout: 30_000
 
   # Serve at "/" the static files from "priv/static" directory.
   #
