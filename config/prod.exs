@@ -21,8 +21,8 @@ config :logger, level: :info
 #
 config :im, ImWeb.Endpoint,
   url: [scheme: "https", host: System.fetch_env!("SERVER_URL"), port: 443],
-  force_ssl: [rewrite_on: [:x_forwarded_proto]],
-#
+  force_ssl: [rewrite_on: [:x_forwarded_proto]]
+
 # The `cipher_suite` is set to `:strong` to support only the
 # latest and more secure SSL ciphers. This means old browsers
 # and clients may not be supported. You can set it to
