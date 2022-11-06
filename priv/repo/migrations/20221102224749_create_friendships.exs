@@ -3,10 +3,10 @@ defmodule Im.Repo.Migrations.CreateFriendships do
 
   def change do
     create table(:friendships) do
-      add :first_id, references(:users)
-      add :second_id, references(:users)
+      add(:first_id, references(:users))
+      add(:second_id, references(:users))
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
   end
 end

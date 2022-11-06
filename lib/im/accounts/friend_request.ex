@@ -8,7 +8,7 @@ defmodule Im.Accounts.FriendRequest do
     belongs_to :from, User
     belongs_to :to, User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

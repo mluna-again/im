@@ -8,7 +8,7 @@ defmodule Im.Messages.Room do
     belongs_to :first, User
     belongs_to :second, User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

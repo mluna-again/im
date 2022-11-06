@@ -6,7 +6,7 @@ defmodule Im.Repo.Migrations.CreateRoomsTable do
       add(:first_id, references(:users, on_delete: :nothing))
       add(:second_id, references(:users, on_delete: :nothing))
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
   end
 end

@@ -10,7 +10,7 @@ defmodule Im.Messages.Message do
     belongs_to :room, Room
     belongs_to :user, User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

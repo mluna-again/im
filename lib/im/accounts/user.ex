@@ -14,7 +14,7 @@ defmodule Im.Accounts.User do
     # i didn't know how to define this so i populate this on the context...
     # has_many :friends, User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

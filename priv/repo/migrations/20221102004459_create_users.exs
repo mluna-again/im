@@ -3,12 +3,12 @@ defmodule Im.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users) do
-      add :username, :string
-      add :password, :string
+      add(:username, :string)
+      add(:password, :string)
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
-    create unique_index(:users, [:username])
+    create(unique_index(:users, [:username]))
   end
 end
