@@ -3,7 +3,7 @@ defmodule Im.Repo.Migrations.AddLastVisitedFieldToRooms do
 
   def change do
     alter table(:rooms) do
-      add(:last_visited_at, :utc_datetime)
+      add(:last_visited_at, :utc_datetime, default: fragment("now()"))
     end
   end
 end
