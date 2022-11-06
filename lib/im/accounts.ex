@@ -8,6 +8,7 @@ defmodule Im.Accounts do
   alias Im.Sql
 
   alias Im.Accounts.{User, FriendRequest, Friendship}
+  alias Im.Messages.{Room}
 
   @doc """
   Returns a list of users that the current user *could* befriend.
@@ -149,6 +150,17 @@ defmodule Im.Accounts do
 
   Raises `Ecto.NoResultsError` if the User does not exist.
 
+  <rant>
+    How is this even possible??? what is even an inner lateral join???
+    I don't know what it does, I tried a bunch of stuff before and none worked.
+    I saw an example of inner_lateral_join in the Ecto's docs and tried it because
+    why not and somehow it worked...
+
+    I'm not responsible for this anymore.
+
+    Computers were a mistake.
+  </rant>
+
   ## Examples
 
       iex> get_user!(123)
@@ -165,10 +177,20 @@ defmodule Im.Accounts do
         or_where: f.second_id == ^id,
         join: friend in User,
         on: (friend.id == f.first_id or friend.id == f.second_id) and friend.id != ^id,
+        join: room in Room,
+        on:
+          (room.first_id == ^id and room.second_id == friend.id) or
+            (room.first_id == friend.id and room.second_id == ^id),
+        inner_lateral_join:
+          message in fragment(
+            "SELECT * FROM messages WHERE room_id = ? ORDER BY inserted_at LIMIT 1",
+            room.id
+          ),
         select: %{
           id: friend.id,
           username: friend.username,
-          friends_since: f.inserted_at
+          friends_since: f.inserted_at,
+          last_message: message.content
         }
       )
       |> Repo.all()
