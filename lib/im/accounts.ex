@@ -159,6 +159,10 @@ defmodule Im.Accounts do
     I'm not responsible for this anymore.
 
     Computers were a mistake.
+
+    Update:
+      So that's why graphQL was created...
+      I needed a left lateral join after all.
   </rant>
 
   ## Examples
@@ -177,14 +181,20 @@ defmodule Im.Accounts do
         or_where: f.second_id == ^id,
         join: friend in User,
         on: (friend.id == f.first_id or friend.id == f.second_id) and friend.id != ^id,
-        join: room in Room,
+        left_join: room in Room,
         on:
           (room.first_id == ^id and room.second_id == friend.id) or
             (room.first_id == friend.id and room.second_id == ^id),
-        inner_lateral_join:
+        left_lateral_join:
           message in fragment(
-            "SELECT * FROM messages WHERE room_id = ? ORDER BY inserted_at LIMIT 1",
+            "SELECT * FROM messages WHERE room_id = ? ORDER BY inserted_at DESC LIMIT 1",
             room.id
+          ),
+        order_by:
+          fragment(
+            "? IS NULL, ? DESC",
+            message.inserted_at,
+            message.inserted_at
           ),
         select: %{
           id: friend.id,
