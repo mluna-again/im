@@ -7,6 +7,7 @@ defmodule Im.Accounts.User do
   schema "users" do
     field :password, :string
     field :username, :string
+    field :icon, :string
     field :invitation_sent, :boolean, virtual: true
     field :invitation_received, :boolean, virtual: true
     field :friends_with_logged, :boolean, virtual: true

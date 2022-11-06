@@ -199,6 +199,7 @@ defmodule Im.Accounts do
         select: %{
           id: friend.id,
           username: friend.username,
+          icon: friend.icon,
           friends_since: f.inserted_at,
           last_message: last_message.content,
           pending_messages_count:
