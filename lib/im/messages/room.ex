@@ -18,4 +18,10 @@ defmodule Im.Messages.Room do
     |> cast(attrs, [:first_id, :second_id])
     |> validate_required([:first_id, :second_id])
   end
+
+  def visited_changeset(room) do
+    room
+    |> change()
+    |> put_change(:last_visited_at, DateTime.truncate(DateTime.utc_now(), :second))
+  end
 end

@@ -116,6 +116,10 @@ defmodule Im.Messages do
   def list_messages_between_users!(first, second, params \\ %{}) do
     room = get_room_or_create!(first, second)
 
+    {:ok, _} =
+      Room.visited_changeset(room)
+      |> Repo.update()
+
     from(message in Message,
       where: message.room_id == ^room.id,
       limit: ^messages_limit(params),
