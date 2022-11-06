@@ -7,6 +7,7 @@ defmodule Im.Messages.Room do
   schema "rooms" do
     belongs_to :first, User
     belongs_to :second, User
+    field :last_visited_at, :utc_datetime
 
     timestamps(type: :utc_datetime)
   end

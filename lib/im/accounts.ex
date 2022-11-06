@@ -186,21 +186,28 @@ defmodule Im.Accounts do
           (room.first_id == ^id and room.second_id == friend.id) or
             (room.first_id == friend.id and room.second_id == ^id),
         left_lateral_join:
-          message in fragment(
+          last_message in fragment(
             "SELECT * FROM messages WHERE room_id = ? ORDER BY inserted_at DESC LIMIT 1",
             room.id
           ),
         order_by:
           fragment(
             "? IS NULL, ? DESC",
-            message.inserted_at,
-            message.inserted_at
+            last_message.inserted_at,
+            last_message.inserted_at
           ),
         select: %{
           id: friend.id,
           username: friend.username,
           friends_since: f.inserted_at,
-          last_message: message.content
+          last_message: last_message.content,
+          pending_messages_count:
+            fragment(
+              "SELECT COUNT(id) FROM messages WHERE room_id = ? AND user_id = ? AND inserted_at > ?",
+              room.id,
+              friend.id,
+              room.last_visited_at
+            )
         }
       )
       |> Repo.all()
