@@ -167,7 +167,8 @@ defmodule Im.Accounts do
         on: (friend.id == f.first_id or friend.id == f.second_id) and friend.id != ^id,
         select: %{
           id: friend.id,
-          username: friend.username
+          username: friend.username,
+          friends_since: f.inserted_at
         }
       )
       |> Repo.all()
