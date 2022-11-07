@@ -21,7 +21,7 @@ defmodule Im.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :password])
+    |> cast(attrs, [:username, :password, :icon])
     |> validate_required([:username, :password])
     |> validate_length(:username, min: 4, max: 15)
     |> validate_length(:password, min: 6, max: 72)
