@@ -203,6 +203,7 @@ defmodule Im.Accounts do
           icon: friend.icon,
           friends_since: f.inserted_at,
           last_message: last_message.content,
+          last_message_date: last_message.inserted_at,
           pending_messages_count:
             fragment(
               "SELECT COUNT(id) FROM messages WHERE room_id = ? AND user_id = ? AND inserted_at > ?",
