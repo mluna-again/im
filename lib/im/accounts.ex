@@ -55,6 +55,7 @@ defmodule Im.Accounts do
         username: u.username,
         invitation_sent: not is_nil(req_sent.from_id),
         invitation_received: not is_nil(req_received.to_id),
+        icon: u.icon,
         friends:
           (friendship.first_id == u.id and friendship.second_id == ^user.id) or
             (friendship.first_id == ^user.id and friendship.second_id == u.id)
