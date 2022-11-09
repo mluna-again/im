@@ -1,27 +1,32 @@
 defmodule ImWeb.MessagesChannel do
   use ImWeb, :channel
 
+  @typing_timeout 3000
+
   @impl true
-  def join("messages:" <> user_id, payload, socket) do
+  def join("messages:" <> user_id, _payload, socket) do
     if authorized?(socket, user_id) do
-      {:ok, socket}
+      {:ok, assign(socket, :current_user, user_id)}
     else
       {:error, %{reason: "unauthorized"}}
     end
   end
 
-  # Channels can be used in a request/response fashion
-  # by sending replies to requests from the client
   @impl true
-  def handle_in("ping", payload, socket) do
-    {:reply, {:ok, payload}, socket}
+  def handle_in("typing", %{"to" => to}, socket) do
+    timer = Map.get(socket.assigns, :timer_ref)
+    if timer, do: Process.cancel_timer(timer)
+    ImWeb.Endpoint.broadcast("messages:#{to}", "typing", %{from: socket.assigns.current_user})
+
+    timer_ref = Process.send_after(self(), {:send_stop_typing, to}, @typing_timeout)
+    socket = assign(socket, :timer_ref, timer_ref)
+    {:noreply, socket}
   end
 
-  # It is also common to receive messages from the client and
-  # broadcast to everyone in the current topic (messages:lobby).
   @impl true
-  def handle_in("shout", payload, socket) do
-    broadcast(socket, "shout", payload)
+  def handle_info({:send_stop_typing, to}, socket) do
+    ImWeb.Endpoint.broadcast("messages:#{to}", "stop_typing", %{from: socket.assigns.current_user})
+
     {:noreply, socket}
   end
 
