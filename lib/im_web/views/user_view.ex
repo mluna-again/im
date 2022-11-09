@@ -15,6 +15,7 @@ defmodule ImWeb.UserView do
       id: user.id,
       username: user.username,
       icon: user.icon,
+      online: user.online,
       invitation_sent: user.invitation_sent,
       invitation_received: user.invitation_received,
       # this is a boolean that checks if logged user is friends with *this* user

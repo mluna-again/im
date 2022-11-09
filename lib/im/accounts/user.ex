@@ -11,6 +11,7 @@ defmodule Im.Accounts.User do
     field :invitation_sent, :boolean, virtual: true
     field :invitation_received, :boolean, virtual: true
     field :friends_with_logged, :boolean, virtual: true
+    field :online, :boolean, default: false
     has_many :friend_requests, FriendRequest, foreign_key: :to_id
     # i didn't know how to define this so i populate this on the context...
     # has_many :friends, User
@@ -21,7 +22,7 @@ defmodule Im.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :password, :icon])
+    |> cast(attrs, [:username, :password, :icon, :online])
     |> validate_required([:username, :password])
     |> validate_length(:username, min: 4, max: 15)
     |> validate_length(:password, min: 6, max: 72)

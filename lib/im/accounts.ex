@@ -53,6 +53,7 @@ defmodule Im.Accounts do
       select: %{
         id: u.id,
         username: u.username,
+        online: u.online,
         invitation_sent: not is_nil(req_sent.from_id),
         invitation_received: not is_nil(req_received.to_id),
         icon: u.icon,
@@ -200,6 +201,7 @@ defmodule Im.Accounts do
         select: %{
           id: friend.id,
           username: friend.username,
+          online: friend.online,
           icon: friend.icon,
           friends_since: f.inserted_at,
           last_message: last_message.content,
@@ -224,6 +226,57 @@ defmodule Im.Accounts do
     user = Repo.get_by!(User, params)
     # double work but i don't feel like duplicating _that_ query...
     get_user!(user.id)
+  end
+
+  @doc """
+  Returns a list of `user` friends.
+
+  ## Example
+
+      iex> get_user_friends(1)
+      iex> [%User{}, ...]
+  """
+  def get_user_friends(user_id) do
+    from(f in Friendship,
+      where: f.first_id == ^user_id,
+      or_where: f.second_id == ^user_id,
+      join: friend in User,
+      on: (friend.id == f.first_id or friend.id == f.second_id) and friend.id != ^user_id,
+      select: friend
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Marks a user as online.
+
+  Raises a `Ecto.NoResultsError` if no user exists.
+
+  ## Example
+
+      iex> mark_user_as_online!(1)
+      iex> %User{online: true, ...}
+  """
+  def mark_user_as_online!(user_id) do
+    Repo.get!(User, user_id)
+    |> User.changeset(%{online: true})
+    |> Repo.update!()
+  end
+
+  @doc """
+  Marks a user as offline.
+
+  Raises a `Ecto.NoResultsError` if no user exists.
+
+  ## Example
+
+      iex> mark_user_as_online!(1)
+      iex> %User{online: false, ...}
+  """
+  def mark_user_as_offline!(user_id) do
+    Repo.get!(User, user_id)
+    |> User.changeset(%{online: false})
+    |> Repo.update!()
   end
 
   @doc """
