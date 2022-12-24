@@ -189,7 +189,7 @@ defmodule Im.Accounts do
             (room.first_id == friend.id and room.second_id == ^id),
         left_lateral_join:
           last_message in fragment(
-            "SELECT * FROM messages WHERE room_id = ? ORDER BY inserted_at DESC LIMIT 1",
+            "SELECT * FROM im_messages WHERE room_id = ? ORDER BY inserted_at DESC LIMIT 1",
             room.id
           ),
         order_by:
@@ -208,7 +208,7 @@ defmodule Im.Accounts do
           last_message_date: last_message.inserted_at,
           pending_messages_count:
             fragment(
-              "SELECT COUNT(id) FROM messages WHERE room_id = ? AND user_id = ? AND inserted_at > ?",
+              "SELECT COUNT(id) FROM im_messages WHERE room_id = ? AND user_id = ? AND inserted_at > ?",
               room.id,
               friend.id,
               room.last_visited_at
