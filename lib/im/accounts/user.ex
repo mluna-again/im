@@ -4,7 +4,7 @@ defmodule Im.Accounts.User do
 
   alias Im.Accounts.FriendRequest
 
-  schema "users" do
+  schema "im_users" do
     field :password, :string
     field :username, :string
     field :icon, :string

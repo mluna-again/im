@@ -5,7 +5,7 @@ defmodule Im.Messages.Message do
   alias Im.Messages.Room
   alias Im.Accounts.User
 
-  schema "messages" do
+  schema "im_messages" do
     field :content, :string
     belongs_to :room, Room
     belongs_to :user, User

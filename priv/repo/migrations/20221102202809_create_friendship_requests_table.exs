@@ -2,9 +2,9 @@ defmodule Im.Repo.Migrations.CreateFriendshipRequestsTable do
   use Ecto.Migration
 
   def change do
-    create table(:friendship_requests) do
-      add(:from_id, references(:users))
-      add(:to_id, references(:users))
+    create table(:im_friendship_requests) do
+      add(:from_id, references(:im_users))
+      add(:to_id, references(:im_users))
 
       timestamps(type: :utc_datetime)
     end
