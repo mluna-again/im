@@ -38,9 +38,9 @@ defmodule Im.Accounts do
     search_term = "%#{Sql.sanitize_like_query(params["search"])}%"
 
     from(u in User,
-      left_join: req_sent in "friendship_requests",
+      left_join: req_sent in "im_friendship_requests",
       on: req_sent.from_id == ^user.id and u.id == req_sent.to_id,
-      left_join: req_received in "friendship_requests",
+      left_join: req_received in "im_friendship_requests",
       on: req_received.to_id == ^user.id and u.id == req_received.from_id,
       left_join: friendship in Friendship,
       on:
