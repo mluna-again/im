@@ -7,6 +7,8 @@ ENV MIX_ENV=prod
 ENV CLIENT_URL=${CLIENT_URL}
 ENV SERVER_URL=${CLIENT_URL}
 
+RUN echo $CLIENT_URL
+
 ADD mix.exs mix.lock ./
 
 RUN mix deps.get
