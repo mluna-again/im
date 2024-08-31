@@ -29,11 +29,14 @@ defmodule ImWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
-      conn
-      |> put_status(:created)
-      |> render("show.json", user: user)
-    end
+    conn
+    |> put_status(:forbidden)
+    |> json(%{errors: %{details: "Sign up is disabled at the moment, come back later!"}})
+    # with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
+    #   conn
+    #   |> put_status(:created)
+    #   |> render("show.json", user: user)
+    # end
   end
 
   def show(conn, %{"id" => id}) do
